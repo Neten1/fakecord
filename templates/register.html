@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+  <canvas id="backgroundCanvas"></canvas>
+  <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+      <div class="mb-4">
+        <label for="username" class="block text-gray-400">Login</label>
+        <input type="text" id="username" name="username" class="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block text-gray-400">Password</label>
+        <input type="password" id="password" name="password" class="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+      </div>
+      <div class="mb-4">
+        <label for="nick" class="block text-gray-400">Nickname</label>
+        <input type="text" id="nick" name="nick" class="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+      </div>
+      <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded">Register</button>
+    </form>
+    <p class="text-gray-400 text-center mt-4">Already have an account? <a href="{{ url_for('login') }}" class="text-indigo-400">Log in</a></p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('backgroundCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const blobs = [];
+    const largeShapes = [];
+
+    function createBlob() {
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: 20 + Math.random() * 20,
+        dx: (Math.random() - 0.5) * 2,
+        dy: (Math.random() - 0.5) * 2,
+        color: `rgba(${Math.floor(Math.random() * 100)}, ${Math.floor(Math.random() * 150 + 100)}, 255, 0.6)`
+      };
+    }
+
+    function createLargeShape() {
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: 500 + Math.random() * 300,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5,
+        color: `rgba(10, 20, ${Math.floor(Math.random() * 80 + 50)}, 0.4)`
+      };
+    }
+
+    for (let i = 0; i < 10; i++) {
+      blobs.push(createBlob());
+    }
+
+    for (let i = 0; i < 5; i++) {
+      largeShapes.push(createLargeShape());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      largeShapes.forEach(shape => {
+        ctx.beginPath();
+        ctx.arc(shape.x, shape.y, shape.radius, 0, Math.PI * 2);
+        ctx.fillStyle = shape.color;
+        ctx.fill();
+
+        shape.x += shape.dx;
+        shape.y += shape.dy;
+
+        if (shape.x - shape.radius < 0 || shape.x + shape.radius > width) shape.dx *= -1;
+        if (shape.y - shape.radius < 0 || shape.y + shape.radius > height) shape.dy *= -1;
+      });
+
+      blobs.forEach(blob => {
+        ctx.beginPath();
+        ctx.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
+        ctx.fillStyle = blob.color;
+        ctx.fill();
+
+        blob.x += blob.dx;
+        blob.y += blob.dy;
+
+        if (blob.x - blob.radius < 0 || blob.x + blob.radius > width) blob.dx *= -1;
+        if (blob.y - blob.radius < 0 || blob.y + blob.radius > height) blob.dy *= -1;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    animate();
+  </script>
+</body>
+</html>
