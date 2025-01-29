@@ -3,9 +3,10 @@ from flask import request, render_template, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from base64 import b64encode
 
 app = Flask(__name__)
-app.secret_key = 'test'
+app.secret_key = 'projektowo'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 db = SQLAlchemy(app)
@@ -33,6 +34,26 @@ class Friend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     friend_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+# FUnkcja do zapisywania hasła w sposób bezpieczniejszy
+def zaszyfruj(haslo):
+    wynik = []
+    klucz = "GomezNieWiedzial"
+    dl = len(klucz)
+
+    for i, znak in enumerate(haslo):
+        znak_k = klucz[i % dl]  # Powtarzanie klucza, jeśli jest krótszy niż tekst
+        znak_nowy = chr((ord(znak) + ord(znak_k)) % 256)
+        wynik.append(znak_nowy)
+
+    # Złączenie szyfrowanych znaków w jeden ciąg
+    wynik_tekstowy = ''.join(wynik)
+
+    wynik_tekstowy  = b64encode(wynik_tekstowy.encode()).decode()
+
+    return wynik_tekstowy
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -48,12 +69,12 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
 
-        if user and user.password == password:  # Note: Hash your passwords in production!
+        if user and user.password == zaszyfruj(password):
             login_user(user)
-            flash('Logged in successfully!', 'success')
+            flash('Zalogowano pomyślnie!', 'success')
             return redirect(url_for('chat'))
         else:
-            flash('Invalid username or password', 'danger')
+            flash('Zły login lub hasło', 'danger')
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -64,12 +85,12 @@ def register():
         nick = request.form['nick']
 
         if User.query.filter_by(username=username).first():
-            flash('Username already exists. Please choose a different one.', 'danger')
+            flash('Użytkownik o takiej nazwie już istnieje. Wybierz inną nazwę.', 'danger')
         else:
-            new_user = User(username=username, password=password, nick=nick)  # Note: Hash your passwords in production!
+            new_user = User(username=username, password=zaszyfruj(password), nick=nick)  # Note: Hash your passwords in production!
             db.session.add(new_user)
             db.session.commit()
-            flash('Registration successful! Please log in.', 'success')
+            flash('Pomyślnie zarejestrowano.', 'success')
             return redirect(url_for('login'))
     return render_template('register.html')
 
@@ -78,7 +99,7 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out.', 'info')
+    flash('Wylogowano.', 'info')
     return redirect(url_for('home'))
 
 @app.route('/chat')
@@ -109,6 +130,20 @@ def add_friend():
     db.session.add(reverse_friend)
     db.session.commit()
     return jsonify({'success': True, 'friend_id': friend.id, 'nick': friend.nick}), 200
+
+@app.route('/remove_friend', methods=['POST'])
+@login_required
+def remove_friend():
+    data = request.get_json()
+    friend_id = data.get('friend_id')
+
+    if not friend_id:
+        return jsonify({'error': 'Invalid input'}), 400
+
+    Friend.query.filter_by(user_id=current_user.id, friend_id=friend_id).delete()
+    Friend.query.filter_by(user_id=friend_id, friend_id=current_user.id).delete()
+    db.session.commit()
+    return jsonify({'success': True}), 200
 
 @app.route('/messages/<int:friend_id>', methods=['GET'])
 @login_required
@@ -143,10 +178,8 @@ def send_message():
     if not receiver:
         return jsonify({'error': 'Receiver not found'}), 404
 
-    # Pobranie nicku użytkownika wysyłającego wiadomość
     sender_nick = current_user.nick
 
-    # Tworzenie nowej wiadomości z nickiem
     message = Message(
         sender_id=current_user.id,
         receiver_id=receiver_id,
@@ -158,6 +191,8 @@ def send_message():
     return jsonify({'success': True}), 200
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    #with app.app_context():
+    #    db.create_all()
     app.run(debug=True)
+
+#Działa ładnie :D
