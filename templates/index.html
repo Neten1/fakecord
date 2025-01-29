@@ -4,69 +4,76 @@
   <meta charset="UTF-8">
   <title>Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white">
-  <header class="bg-gray-800 shadow-lg">
-    <div class="container mx-auto flex items-center justify-between py-4 px-6">
-      <h1 class="text-2xl font-bold text-indigo-500">Fakecord</h1>
+<body class="text-white">
+  <header class="bg-gray-800 shadow-lg py-4">
+    <div class="container mx-auto flex items-center justify-between px-6">
+      <h1 class="text-3xl font-bold text-indigo-400">Fakecord</h1>
       <nav class="flex items-center gap-6">
         <a href="#" class="hover:text-indigo-400">Home</a>
         {% if current_user.is_authenticated %}
           <a href="{{ url_for('logout') }}" class="hover:text-indigo-400">Logout</a>
         {% else %}
           <a href="{{ url_for('login') }}" class="hover:text-indigo-400">Login</a>
-        <a href="{{ url_for('register') }}" class="hover:text-indigo-400">Register</a>
+          <a href="{{ url_for('register') }}" class="hover:text-indigo-400">Register</a>
         {% endif %}
       </nav>
     </div>
   </header>
   <section class="text-center py-20 px-6">
-    <h2 class="text-4xl md:text-6xl font-extrabold mb-6">Witaj {{ current_user.username if current_user.is_authenticated else 'nieznajomy' }}!</h2>
+    <h2 class="text-5xl md:text-7xl font-extrabold mb-6">Witaj {{ current_user.username if current_user.is_authenticated else 'nieznajomy' }}!</h2>
     <p class="text-lg md:text-xl text-gray-300">Przed tobą nasz projekt fakultetowy. Podziwiaj.</p>
   </section>
-<!-- Hero Section -->
   <section class="text-center py-20 px-6">
     <div class="container mx-auto">
-      <h2 class="text-4xl md:text-6xl font-extrabold mb-6">
-        Rozmawiaj ze znajomymi, <span class="text-indigo-500">a raczej tylko pisz.</span>
+      <h2 class="text-5xl md:text-6xl font-extrabold mb-6 text-indigo-500">
+        Rozmawiaj ze znajomymi, a raczej tylko pisz.
       </h2>
       {% if not current_user.is_authenticated %}
       <p class="text-lg md:text-xl text-gray-300 mb-10">
-        Przeżyj coś co nigdy nie powstało - wysyłaj wiadomości... do innych ludzi! (jeśli starczy budżetu na serwer)
+        Przeżyj coś co nigdy nie powstało - wysyłaj wiadomości... do innych ludzi!
       </p>
-      <a href="{{ url_for('login') }}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">
+      <a href="{{ url_for('login') }}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform">
       Zaczynamy
       </a>
       {% else %}
-      <a href="{{ url_for('chat') }}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded">
-      Przjedź do czatu
+      <a href="{{ url_for('chat') }}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform">
+      Przejdź do czatu
       </a>
       {% endif %}
     </div>
   </section>
-  {% if not current_user.is_authenticated %}
-<!-- Features Section -->
   <section class="bg-gray-800 py-16 px-6">
     <div class="container mx-auto">
-      <h3 class="text-3xl font-bold text-center mb-12">Dlaczego zasługujemy na 5?</h3>
+      <h3 class="text-3xl font-bold text-center mb-12 text-indigo-400">Dlaczego zasługujemy na 5?</h3>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+        <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center transform hover:scale-105 transition-transform">
           <h4 class="text-xl font-semibold mb-4">Funkcjonalny i przejrzysty kod</h4>
           <p class="text-gray-300">No serio, aż widać co po drugiej stronie ekranu.</p>
         </div>
-        <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+        <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center transform hover:scale-105 transition-transform">
           <h4 class="text-xl font-semibold mb-4">Piękny i nowoczesny design</h4>
           <p class="text-gray-300">Godziny pracy włożone w wykorzystanie <s>gotowego schematu</s>.</p>
         </div>
-        <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+        <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center transform hover:scale-105 transition-transform">
           <h4 class="text-xl font-semibold mb-4">Jesteśmy uczciwi</h4>
           <p class="text-gray-300">W porównaniu do naszej inspiracji - nie kradniemy danych. (jeszcze)</p>
         </div>
       </div>
     </div>
   </section>
-  {% endif %}
-<!-- Footer -->
   <footer class="bg-gray-800 py-6">
     <div class="container mx-auto text-center text-gray-400">
       <p><b>&copy; 2025</b> Tymon Maciejewski, Piotr Nowak.</p>
