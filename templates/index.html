@@ -18,22 +18,25 @@
   </style>
 </head>
 <body class="text-white">
+  {% for mesg in get_flashed_messages() %}
+      <h1>{{ mesg }}</h1>
+      {% endfor %}
   <header class="bg-gray-800 shadow-lg py-4">
     <div class="container mx-auto flex items-center justify-between px-6">
       <h1 class="text-3xl font-bold text-indigo-400">Fakecord</h1>
       <nav class="flex items-center gap-6">
         <a href="#" class="hover:text-indigo-400">Home</a>
         {% if current_user.is_authenticated %}
-          <a href="{{ url_for('logout') }}" class="hover:text-indigo-400">Logout</a>
+          <a href="{{ url_for('logout') }}" class="hover:text-indigo-400">Wyloguj</a>
         {% else %}
-          <a href="{{ url_for('login') }}" class="hover:text-indigo-400">Login</a>
-          <a href="{{ url_for('register') }}" class="hover:text-indigo-400">Register</a>
+          <a href="{{ url_for('login') }}" class="hover:text-indigo-400">Logowanie</a>
+          <a href="{{ url_for('register') }}" class="hover:text-indigo-400">Rejestracja</a>
         {% endif %}
       </nav>
     </div>
   </header>
   <section class="text-center py-20 px-6">
-    <h2 class="text-5xl md:text-7xl font-extrabold mb-6">Witaj {{ current_user.username if current_user.is_authenticated else 'nieznajomy' }}!</h2>
+    <h2 class="text-5xl md:text-7xl font-extrabold mb-6">Witaj {{ current_user.nick if current_user.is_authenticated else 'nieznajomy' }}!</h2>
     <p class="text-lg md:text-xl text-gray-300">Przed tobą nasz projekt fakultetowy. Podziwiaj.</p>
   </section>
   <section class="text-center py-20 px-6">
@@ -50,7 +53,7 @@
       </a>
       {% else %}
       <a href="{{ url_for('chat') }}" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform">
-      Przejdź do czatu
+      Przejdź do czatu 💬
       </a>
       {% endif %}
     </div>

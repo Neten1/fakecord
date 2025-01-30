@@ -20,25 +20,44 @@
   </style>
 </head>
 <body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+  {% for mesg in get_flashed_messages() %}
+      <h1>{{ mesg }}</h1>
+      {% endfor %}
   <canvas id="backgroundCanvas"></canvas>
   <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
+    <h2 class="text-2xl font-bold text-center mb-6">Rejestracja</h2>
     <form method="POST" action="{{ url_for('register') }}">
       <div class="mb-4">
-        <label for="username" class="block text-gray-400">Login</label>
+        <label for="username" class="block text-gray-400">
+          Nazwa użytkownika
+          <span class="relative group">
+            (?)
+            <span class="absolute left-0 bottom-full mb-2 hidden group-hover:block w-48 p-2 text-sm text-white bg-gray-800 rounded shadow-lg">
+              Twoja unikalna nazwa użytkownika. Służy do logowania i dodawnia znajomych.
+            </span>
+          </span>
+        </label>
         <input type="text" id="username" name="username" class="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
       </div>
       <div class="mb-4">
-        <label for="password" class="block text-gray-400">Password</label>
+        <label for="password" class="block text-gray-400">Hasło</label>
         <input type="password" id="password" name="password" class="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
       </div>
-      <div class="mb-4">
-        <label for="nick" class="block text-gray-400">Nickname</label>
+       <div class="mb-4">
+        <label for="nick" class="block text-gray-400">
+          Pseudonim
+          <span class="relative group">
+            (?)
+            <span class="absolute left-0 bottom-full mb-2 hidden group-hover:block w-48 p-2 text-sm text-white bg-gray-800 rounded shadow-lg">
+              Nazwa, która wyświetla się podczas pisania z innymi. Można ją zmienić.
+            </span>
+          </span>
+        </label>
         <input type="text" id="nick" name="nick" class="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
       </div>
-      <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded">Register</button>
+      <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded">Zarejestruj mnie</button>
     </form>
-    <p class="text-gray-400 text-center mt-4">Already have an account? <a href="{{ url_for('login') }}" class="text-indigo-400">Log in</a></p>
+    <p class="text-gray-400 text-center mt-4">Masz już konto? <a href="{{ url_for('login') }}" class="text-indigo-400">Zaloguj się</a></p>
   </div>
 
   <script>
